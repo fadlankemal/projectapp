@@ -6,7 +6,7 @@ Tambah Data
 
 
 @section('content')
-<div class="container-fluid mx-3">
+<div class="container-fluid mt-2 mx-3">
     <div class="container mt-3 ">
         <h1>Tambah Data Operator</h1>
         <!-- errror -->
@@ -15,7 +15,8 @@ Tambah Data
             {{ session()->get('error_message') }}
         </div>
         @endif
-        <form method="POST" action="{{ url('operator/add')}}">
+        <!-- form -->
+        <form method="POST" action="{{ url('operators')}}">
             @csrf
             <div class="mb-3">
                 <label for="nama_operator" class="form-label">Nama Operator</label>
@@ -32,6 +33,7 @@ Tambah Data
                 <span class="text-danger">{{ $errors->first('id_operator') }}</span>
                 @endif
             </div>
+            
             <div class="mb-3">
                 <label for="factory" class="form-label">Factory</label>
                 <input class="form-control" id="factory" name="factory"></input>

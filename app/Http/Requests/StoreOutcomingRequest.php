@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreMovementRequest extends FormRequest
+class StoreOutcomingRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,7 +24,7 @@ class StoreMovementRequest extends FormRequest
         return [
             'jumlah'            => 'required|integer',
             'operator_id'       => 'required|integer',
-            'barang_id'         => 'required|integer',        
+            'barang_id'         => 'required|integer',     
         ];
     }
 }

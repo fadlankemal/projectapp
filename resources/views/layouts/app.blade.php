@@ -23,7 +23,9 @@
     <link href="exam/js/script.js" rel="stylesheet" />
     <link href="/scripts.js" rel="stylesheet" />
     <link href="../../resources/js/app.js" rel="stylesheet" />
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
 
     <link rel="stylesheet" href="{{ asset('fontawesome-free-6.6.0-web/css/all.min.css') }}">
     <!--  -->

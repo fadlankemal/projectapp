@@ -35,7 +35,7 @@ class OpController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(Request $request)
     {
         if (!Auth::check()) {
             return redirect('login');
@@ -114,13 +114,16 @@ class OpController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy( $id)
     {
         if (!Auth::check()) {
             return redirect('login');
         }
         Operator::where('id', $id)->delete();
 
-        return redirect('operators');
+        return response()->json([
+            'success' => true,
+            'message' => 'Data Post Berhasil Dihapus!.',
+        ]); 
     }
 }

@@ -7,7 +7,7 @@ Data Operator
 
 
 @section('content')
-<div class="container-fluid mx-3">
+<div class="container-fluid mt-2 mx-3">
     <h1>Data Operator</h1>
     <a href="{{ url('operators/add')}}" class="btn btn-success mb-2">Tambah data</a>
     @if(session('success'))
@@ -17,8 +17,8 @@ Data Operator
     </div>
     @endif
     <div class="table-responsive mt-2">
-        <table class="table table-bordered table-hover" style="border: 1px solid; width: 95%;">
-            <thead class="table-primary">
+        <table class="table table-striped  table-hover" style="width: 95%;">
+            <thead class="">
                 <tr>
                     <th>No</th>
                     <th>Nama Operator</th>
@@ -36,12 +36,12 @@ Data Operator
                     <td>{{ $operator->id_operator}}</td>
                     <td>{{ $operator->factory}}</td>
                     <td scope="col" class="td-actions text-right">
-                        <a href="{{ url("operators/{$operator->nama_operator}/edit") }}" class="btn btn-info">
+                        <a href="{{ url("operators/{$operator->nama_operator}/edit") }}" class="btn btn-info btn-sm">
                             <i class="fa-regular fa-pen-to-square"></i>
                         </a>
-                        <button type="button" rel="tooltip" class="btn btn-danger">
+                        <a href="javascript:void(0)" id="btn-delete-operator" data-id="{{ $operator->id }}" class="btn btn-danger btn-sm">
                             <i class="fa-solid fa-trash"></i>
-                        </button>
+                        </a>
                     </td>
                     @php($number++)
                 </tr>
@@ -50,4 +50,56 @@ Data Operator
         </table>
     </div>
 </div>
+
+<script>
+    //button create post event
+    $('body').on('click', '#btn-delete-operator', function() {
+
+        let operator_id = $(this).data('id');
+        let token = $("meta[name='csrf-token']").attr("content");
+        var parent = $(this).parent();
+
+        Swal.fire({
+            title: 'Apakah Kamu Yakin?',
+            text: "ingin menghapus data ini!",
+            icon: 'warning',
+            showCancelButton: true,
+            cancelButtonText: 'TIDAK',
+            confirmButtonText: 'HAPUS'
+        }).then((result) => {
+            if (result.isConfirmed) {
+
+                console.log('test');
+
+                //fetch to delete data
+                $.ajax({
+
+                    url: `/operators/${operator_id}`,
+                    type: "DELETE",
+                    cache: false,
+                    data: {
+                        "_token": token
+                    },
+                    success: function(response) {
+
+                        //show success message
+                        Swal.fire({
+                            type: 'success',
+                            icon: 'success',
+                            title: `${response.message}`,
+                            showConfirmButton: false,
+                            timer: 2000
+                        });
+
+                        //remove post on table
+                        $(`#index_${operator_id}`).remove();
+                    }
+                });
+
+
+            }
+        })
+
+    });
+</script>
 @endsection

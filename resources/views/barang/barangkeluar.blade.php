@@ -40,3 +40,9 @@ Barang Keluar
     </div>
 </div>
 @endsection
+
+<!-- <td scope="col">{!! DNS1D::getBarcodeHTML($goods->tipe_barang, 'C39', 1,44);
+                    !!}</td> -->
+
+                    <!-- </div> -->
+    <!-- {!! $data->withQueryString()->links('pagination::bootstrap-5') !!} -->

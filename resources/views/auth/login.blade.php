@@ -35,7 +35,7 @@
                     <h3 class="text-center mb-3 font-weight-medium">
                         Login
                     </h3>
-                    <div class="mb-3">
+                        <div class="mb-3">
                         <label class="form-label">Nama</label>
                         <input type="name" class="form-control @error('nama') is-invalid @enderror"
                             placeholder="" value="{{ old('name') }}" name="name">

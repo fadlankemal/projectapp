@@ -11,7 +11,7 @@ class StoreGoodRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,17 @@ class StoreGoodRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'nama_barang'           => 'required|max:100',
+            'tipe_barang'           => 'required|max:100|unique:goods,tipe_barang',
+            'merek_barang'          => 'required|string',
+            'satuan'                => 'required|string',
+            'stok'                  => '',
+            'rak_barang'            => 'required',
+            'nomor_rak'             => 'required',  
+            'stok_alert'            => 'required|integer',
+            'code'                  => '',
+            'details'               => '',
+            
         ];
     }
 }

@@ -20,10 +20,12 @@ class Good extends Model
         'tipe_barang',
         'merek_barang',
         'stok',
+        'satuan',
         'stok_alert',
         'code',
+        'details',
         'rak_barang',
-        'nomor_barang',
+        'nomor_rak',
     ];
 
     protected $casts = [
@@ -40,8 +42,13 @@ class Good extends Model
         ];
     }
 
-    
-    public function movement() :HasMany
+    public function getRouteKeyName(): string
+    {
+        return 'tipe_barang';
+    }
+
+
+    public function movement(): HasMany
     {
         return $this->hasMany(Movement::class);
     }

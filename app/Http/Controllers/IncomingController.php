@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Good;
 use App\Models\Operator;
 use App\Models\Movement;
+use App\Enums\MovementStatus;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -23,10 +24,12 @@ class IncomingController extends Controller
             return redirect('login');
         }
 
-        $items = Movement::orderBy('created_at', 'desc')->get();
-
-        $goods = Good::all(['id', 'tipe_barang']);
+        $items = Movement::orderBy('created_at', 'desc')->where('status', MovementStatus::INCOMING)->get();
+        
+        $goods = Good::all(['id', 'tipe_barang']) ;
+        
         $ops = Operator::all(['id', 'nama_operator']);
+        
         return view('barangmasuk.index', [
             'goods' => $goods,
             'ops' => $ops,
@@ -37,7 +40,7 @@ class IncomingController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreIncomingRequest $request)
     {
         if (!Auth::check()) {
             return redirect('login');
@@ -45,48 +48,13 @@ class IncomingController extends Controller
 
         Movement::create($request->all());
 
-        return redirect()->back();
-    }
+        $good = Good::findOrFail($request->barang_id);
+        $good->stok += $request->jumlah;
+        $good->save();
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, $id)
-    {
-
-        if (!Auth::check()) {
-            return redirect('login');
-        }
-
-        $tipe_barang = $request->input('tipe_barang');
-        $jumlah = $request->input('jumlah');
-        $nama_operator = $request->input('nama_operator');
-
-        Good::where('id', $id)
-            ->update([
-                'tipe_barang' => $tipe_barang,
-                'jumlah' => $jumlah,
-                'nama_operator' => $nama_operator,
-                'created_at' => date('Y-m-d H:i:s')
-            ]);
-
-        return redirect('barangmasuk');
+        return redirect()
+            ->back()
+            ->with('success', 'Data barang masuk berhasil ditambahkan!');
     }
 
     /**

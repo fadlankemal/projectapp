@@ -6,8 +6,15 @@ Barang Masuk
 @endsection
 
 @section('content')
-<div class="container-fluid mx-3">
+<div class="container-fluid mt-2 mx-3">
     <h1>Barang Masuk</h1>
+
+
+    @if(session()->has('error_message'))
+    <div class="alert alert-danger">
+        {{ session()->get('error_message') }}
+    </div>
+    @endif
 
     <form method="POST" action="{{ url('incoming')}}" class="" role="search">
         @csrf
@@ -36,6 +43,9 @@ Barang Masuk
                     </option>
                     @endforeach
                 </select>
+                @endif
+                @if($errors->has('barang_id'))
+                <span class="text-danger">{{ $errors->first('barang_id') }}</span>
                 @endif
             </div>
 
@@ -76,6 +86,9 @@ Barang Masuk
                     </option>
                     @endforeach
                 </select>
+                @endif
+                @if($errors->has('operator_id'))
+                <span class="text-danger">{{ $errors->first('operator_id') }}</span>
                 @endif
             </div>
         </div>

@@ -131,7 +131,8 @@ return [
 
     ServiceProvider::defaultProviders()->merge([
         // ...
-        Milon\Barcode\BarcodeServiceProvider::class
+        Milon\Barcode\BarcodeServiceProvider::class,
+        Spatie\Permission\PermissionServiceProvider::class
 
     ])->toArray(),
 

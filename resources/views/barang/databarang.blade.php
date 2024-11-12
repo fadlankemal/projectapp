@@ -7,7 +7,7 @@ Data Barang
 
 @section('content')
 <!-- Page content-->
-<div class="container-fluid mx-3" style="">
+<div class="container-fluid mt-2 mx-3">
     <h1>Data Barang</h1>
     <a href="{{ url('databarang/tambahdata')}}" class="btn btn-success mb-2">Buat Data Baru</a>
 
@@ -48,37 +48,31 @@ Data Barang
         <tbody>
             <tr>
                 @php($number = 1)
-                @foreach ($data as $datum)
+                @foreach ($goods as $good)
                 <td scope="col">{{ $number }}</td>
-                <td scope="col">{{ $datum->nama_barang}}</td>
-                <td scope="col">{{ $datum->tipe_barang}}</td>
-                <td scope="col">{{ $datum->merek_barang}}</td>
-                <td scope="col">{{ $datum->stok}}</td>
-                <!-- <td scope="col">{!! DNS1D::getBarcodeHTML($datum->tipe_barang, 'C39', 1,44);
-                    !!}</td> -->
-                <td scope="col" scope="col">{{ $datum->rak_barang}}</td>
-                <td scope="col">{{ $datum->nomor_rak}}</td>
+                <td scope="col">{{ $good->nama_barang}}</td>
+                <td scope="col">{{ $good->tipe_barang}}</td>
+                <td scope="col">{{ $good->merek_barang}}</td>
+                <td scope="col">{{ $good->stok}}</td>
+                <td scope="col">{{ $good->rak_barang}}</td>
+                <td scope="col">{{ $good->nomor_rak}}</td>
 
-                <td scope="col" class="td-actions text-right">
-                    <a href="{{ url("databarang/$datum->id/editdata") }}" class="btn btn-info">
+                <td scope="col" class="d-flex gap-1">
+                    <a href="{{ url("goods/{$good->tipe_barang}/edit") }}" class="btn btn-info col">
                         <i class="fa-regular fa-pen-to-square"></i>
                     </a>
-                    <a href="{{ url("databarang/$datum->id/show") }}" class="btn btn-success">
+                    <a href="{{ url("goods/{$good->tipe_barang}") }}" class="btn btn-success col">
                         <i class="fa-solid fa-eye"></i>
                     </a>
-                    <button type="button" rel="tooltip" class="btn btn-danger">
+                    <a href="javascript:void(0)" id="btn-delete-goods" data-id="{{ $good->id }}" class="btn btn-danger btn-sm">
                         <i class="fa-solid fa-trash"></i>
-                    </button>
+                    </a>
                 </td>
                 @php($number++)
             </tr>
             @endforeach
         </tbody>
     </table>
-
-    <!-- </div> -->
-    <!-- {!! $data->withQueryString()->links('pagination::bootstrap-5') !!} -->
-
 
     <script>
         $(document).ready(function() {
@@ -110,6 +104,56 @@ Data Barang
                     $('.no-result').hide();
                 }
             });
+        });
+    </script>
+    <script>
+        //button create post event
+        $('body').on('click', '#btn-delete-goods', function() {
+
+            let good_id = $(this).data('id');
+            let token = $("meta[name='csrf-token']").attr("content");
+
+            Swal.fire({
+                title: 'Apakah Kamu Yakin?',
+                text: "ingin menghapus data ini!",
+                icon: 'warning',
+                showCancelButton: true,
+                cancelButtonText: 'TIDAK',
+                confirmButtonText: 'HAPUS'
+            }).then((result) => {
+                if (result.isConfirmed) {
+
+                    console.log('test');
+
+                    //fetch to delete data
+                    $.ajax({
+
+                        url: `/goods/${good_id}`,
+                        type: "DELETE",
+                        cache: false,
+                        data: {
+                            "_token": token
+                        },
+                        success: function(response) {
+
+                            //show success message
+                            Swal.fire({
+                                type: 'success',
+                                icon: 'success',
+                                title: `${response.message}`,
+                                showConfirmButton: false,
+                                timer: 3000
+                            });
+
+                            //remove post on table
+                            $(`#index_${operator_id}`).remove();
+                        }
+                    });
+
+
+                }
+            })
+
         });
     </script>
     <!-- jQuery -->

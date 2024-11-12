@@ -6,10 +6,10 @@ Barang Keluar
 @endsection
 
 @section('content')
-<div class="container-fluid mx-3">
+<div class="container-fluid mt-2 mx-3">
     <h1>Barang Keluar</h1>
 
-    <form method="POST" action="{{ url('incoming')}}" class="" role="search">
+    <form method="POST" action="{{ url('outcoming')}}" class="" role="search">
         @csrf
         <div class="col-sm-6 col-md-6">
             <label for="tipebarang" class="form-label">Tipe Barang</label>
@@ -37,6 +37,9 @@ Barang Keluar
                     </option>
                     @endforeach
                 </select>
+                @endif
+                @if($errors->has('barang_id'))
+                <span class="text-danger">{{ $errors->first('barang_id') }}</span>
                 @endif
             </div>
 
@@ -77,6 +80,9 @@ Barang Keluar
                     </option>
                     @endforeach
                 </select>
+                @endif
+                @if($errors->has('operator_id'))
+                <span class="text-danger">{{ $errors->first('operator_id') }}</span>
                 @endif
             </div>
         </div>

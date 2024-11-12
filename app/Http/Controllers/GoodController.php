@@ -8,6 +8,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use \Milon\Barcode\DNS1D;
 use Illuminate\View\View;
+use App\Http\Requests\StoreGoodRequest;
+use App\Http\Requests\UpdateGoodRequest;
 
 class GoodController extends Controller
 {
@@ -16,18 +18,17 @@ class GoodController extends Controller
         if (!Auth::check()) {
             return redirect('login');
         }
-        $data = Good::orderBy('nomor_rak', 'asc')->paginate(25);
+        $goods = Good::orderBy('nomor_rak', 'asc')->get();
 
         $search = Good::search($request->search ?? '')->get();        
         $view_data = [
-            'data' => $data,
+            'goods' => $goods,
             // 'barcode' => $barcode,
             'search' => $search
         ];
         return view('barang.databarang', $view_data);
         
     }
-
 
     /**
      * Show the form for creating a new resource.
@@ -40,51 +41,32 @@ class GoodController extends Controller
         return view('barang.tambahdata');
     }
 
-
-
-    public function store(Request $request)
+    public function store(StoreGoodRequest $request)
     {
         if (!Auth::check()) {
             return redirect('login');
         }
-        $nama_barang = $request->input('nama_barang');
-        $tipe_barang = $request->input('tipe_barang');
-        $merek_barang = $request->input('merek_barang');
-        $stok = $request->input('stok');
-        $stok_alert = $request->input('stok_alert');
-        $rak_barang = $request->input('rak_barang');
-        $nomor_rak = $request->input('nomor_rak');
+        Good::create($request->except('stok'));
     
-        $generator = new DNS1D();
-        $generator->setStorPath(__DIR__.'/barcode/');
-        $barcode = $generator->getBarcodeHTML($tipe_barang, 'C39');
+        // $generator = new DNS1D();
+        // $generator->setStorPath(__DIR__.'/barcode/');
+        // $barcode = $generator->getBarcodeHTML($tipe_barang, 'C39');
 
-        Good::insert([
-            'nama_barang' => $nama_barang,
-            'tipe_barang' => $tipe_barang,
-            'merek_barang' => $merek_barang,
-            'stok' => $stok,
-            'rak_barang' => $rak_barang,
-            'nomor_rak' => $nomor_rak,
-            'stok_alert' => $stok_alert,
-        ]);
-
-        return redirect()->back()->with('Data barang berhasil ditambahkan');
+        return redirect('goods')
+        ->with('success', 'Data barang berhasil ditambahkan');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Good $good)
     {
-        $datum = Good::where('id', $id)
-            ->first();
         $generator = new DNS1D();
         $generator->setStorPath(__DIR__.'/cache/');
-        $barcode = $generator->getBarcodeHTML($datum->tipe_barang, 'C39');
+        $barcode = $generator->getBarcodeHTML($good->tipe_barang, 'C39');
 
         $view_data = [
-            'datum' => $datum,
+            'good'    => $good,
             'barcode' => $barcode
         ];
 
@@ -94,16 +76,13 @@ class GoodController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit($id)
+    public function edit(Good $good)
     {
         if (!Auth::check()) {
             return redirect('login');
         }
-        $datum = Good::where('id', $id)
-            ->first();
-
         $view_data = [
-            'datum' => $datum
+            'good' => $good
         ];
         return view('barang.editdata', $view_data);
     }
@@ -111,32 +90,17 @@ class GoodController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, $id)
+    public function update(UpdateGoodRequest $request, Good $good)
     {
         
         if (!Auth::check()) {
             return redirect('login');
         }
         
-        $nama_barang = $request->input('nama_barang');
-        $tipe_barang = $request->input('tipe_barang');
-        $merek_barang = $request->input('merek_barang');
-        $stok = $request->input('stok');
-        $rak_barang = $request->input('rak_barang');
-        $nomor_rak = $request->input('nomor_rak');
-
-        Good::where('id', $id)
-            ->update([
-                'nama_barang' => $nama_barang,
-                'tipe_barang' => $tipe_barang,
-                'merek_barang' => $merek_barang,
-                'stok' => $stok,
-                'rak_barang' => $rak_barang,
-                'nomor_rak' => $nomor_rak,
-
-            ]);
-
-        return redirect('databarang');
+        $good->update($request->all());
+        
+        return redirect('databarang')
+            ->with('success', 'Data berhasil diupdate');
     }
 
     /**
@@ -149,6 +113,9 @@ class GoodController extends Controller
         }
         Good::where('id', $id)->delete();
 
-        return redirect('databarang');
+        return response()->json([
+            'success' => true,
+            'message' => 'Data Post Berhasil Dihapus!.',
+        ]); 
     }
 }

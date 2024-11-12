@@ -6,7 +6,7 @@ Dashboard
 
 
 @section('content')
-<div class="container mt-2">
+<div class="container mt-2 mx-3">
     <h1>Edit Data Barang</h1>
 
     @if(session()->has('error_message'))

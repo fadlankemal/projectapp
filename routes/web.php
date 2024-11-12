@@ -6,7 +6,9 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\GoodController;
 use App\Http\Controllers\IncomingController;
 use App\Http\Controllers\OutcomingController;
-
+use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\RoleController;
+use App\Http\Controllers\UserController;
 
 // Route::view('dashboard', 'dashboard')
 //     ->middleware(['auth', 'verified'])
@@ -33,17 +35,38 @@ Route::get('data/show{id}', [GoodController::class, 'show']);
 Route::patch('data/{id}', [GoodController::class, 'update']);
 Route::delete('data/{id}', [GoodController::class, 'destroy']);
 
+Route::resource('permissions', PermissionController::class);
+Route::get('permissions/{permissionId}/delete', [PermissionController::class, 'destroy']);
+
+Route::resource('roles', RoleController::class);
+Route::get('roles/{roleId}/delete', [RoleController::class, 'destroy']);
+Route::get('roles/{roleId}/give-permissions', [RoleController::class, 'addPermissionRole']);
+Route::put('roles/{roleId}/give-permissions', [RoleController::class, 'givePermissionToRole']);
+
+Route::resource('users', UserController::class);
+
+Route::controller(GoodController::class)->group(function () {
+    Route::get('goods', 'index');
+    Route::get('goods/add', 'create');
+    Route::post('goods', 'store');
+
+    Route::put('goods/{good:tipe_barang}', 'update');
+    Route::get('goods/{good:tipe_barang}/edit', 'edit');
+
+    Route::get('goods/{good:tipe_barang}', 'show');
+    Route::delete('goods/{id}', 'destroy');
+});
 
 Route::controller(OpController::class)->group(function () {
     Route::get('operators', 'index');
     Route::get('operators/add', 'create');
-    Route::post('operators/add', 'store');
+    Route::post('operators', 'store');
 
     Route::put('operators/{operator}', 'update');
     Route::get('operators/{operator:nama_operator}/edit', 'edit');
 
     // Route::get('operator/{operator}', 'show');
-    Route::delete('operators/{operator}', 'destroy');
+    Route::delete('operators/{id}', 'destroy');
 });
 
 Route::post('dataop', [OpController::class, 'store']);
@@ -58,6 +81,6 @@ Route::post('incoming', [IncomingController::class, 'store']);
 
 
 Route::get('barangkeluar', [OutcomingController::class, 'index']);
-Route::post('barangkeluar', [OutcomingController::class, 'store']);
+Route::post('outcoming', [OutcomingController::class, 'store']);
 
 // require __DIR__ . '/auth.php';
