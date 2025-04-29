@@ -5,17 +5,21 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Laravel\Scout\Searchable;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Good extends Model
 {
-    use HasFactory;
+    use SoftDeletes;
 
     protected $table = 'goods';
     protected $guarded = ['id'];
 
-
-    public $fillable = [
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
         'nama_barang',
         'tipe_barang',
         'merek_barang',
@@ -31,25 +35,11 @@ class Good extends Model
     protected $casts = [
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
+        'deleted_at' => 'datetime',
     ];
 
-    use Searchable;
-    public function toSearchableArray()
+    public function barang(): HasMany
     {
-        return [
-            'nama_barang' => $this->nama_barang,
-            'tipe_barang' => $this->tipe_barang
-        ];
-    }
-
-    public function getRouteKeyName(): string
-    {
-        return 'tipe_barang';
-    }
-
-
-    public function movement(): HasMany
-    {
-        return $this->hasMany(Movement::class);
+        return $this->hasMany(Good::class);
     }
 }

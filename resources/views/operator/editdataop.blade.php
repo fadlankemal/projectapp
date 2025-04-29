@@ -9,6 +9,10 @@ Dashboard
 <div class="container mt-2 mx-3">
     <h1>Edit Data Barang</h1>
 
+    <a href="{{ url("operators") }}" class="btn btn-danger mb-3">
+        {{ __('Back') }}
+    </a>
+
     @if(session()->has('error_message'))
     <div class="alert alert-danger">
         {{ session()->get('error_message') }}
@@ -45,11 +49,6 @@ Dashboard
         </div>
 
         <button type="submit" class="btn btn-success mb-2">Input</button>
-    </form>
-    <form method="POST" action="{{url ("operators/{operator}")}}" class="form-control">
-        @method('delete')
-        @csrf
-        <button type="submit" value="delete" class="btn btn-danger">DELETE</button>
     </form>
 </div>
 @endsection

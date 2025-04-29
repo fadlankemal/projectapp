@@ -2,29 +2,39 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Operator;
+use RealRashid\SweetAlert\Facades\Alert;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreOpRequest;
 use App\Http\Requests\UpdateOpRequest;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\DB;
-use App\Models\Operator;
-
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Routing\Controllers\Middleware;
 
 class OpController extends Controller
 {
+
+    public static function middleware(): array
+    {
+        return [
+            // examples with aliases, pipe-separated names, guards, etc:
+            new Middleware('permission:view operator', only: ['index']),
+            new Middleware('permission:create operator', only: ['create', 'store']),
+            new Middleware('permission:update operator', only: ['update', 'edit']),
+            new Middleware('permission:delete operator', only: ['destroy']),
+        ];
+    }
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        if (!Auth::check()) {
-            return redirect('login');
-        }
+        Gate::authorize('view', new Operator());
+
         $operators = Operator::all();
-        // ->where('id', '=', $id)
-        // ->first();
+        $title = 'Delete Data!';
+        $text = "Are you sure you want to delete?";
+        confirmDelete($title, $text);
 
         $view_data = [
             'operators' => $operators,
@@ -37,10 +47,9 @@ class OpController extends Controller
      */
     public function create(Request $request)
     {
-        if (!Auth::check()) {
-            return redirect('login');
-        }
-        return view('operator.tambahdataoperator'); 
+        Gate::authorize('create', Operator::class);
+
+        return view('operator.tambahdataoperator');
     }
 
     /**
@@ -48,14 +57,11 @@ class OpController extends Controller
      */
     public function store(StoreOpRequest $request)
     {
-        if (!Auth::check()) {
-            return redirect('login');
-        }
+        Gate::authorize('store', Operator::class);
 
         Operator::create($request->all());
-
-        return redirect('operators')
-            ->with('success', 'Data Operator berhasil ditambahkan');
+        Alert::success('Data Operator Created Successfully');
+        return redirect('operators');
     }
 
     /**
@@ -71,17 +77,8 @@ class OpController extends Controller
      */
     public function edit(Operator $operator)
     {
-        if (!Auth::check()) {
-            return redirect('login');
-        }
+        Gate::authorize('edit', $operator);
 
-
-        // $datum = Operator::where('id', $id)
-        // ->first();
-
-        // $view_data = [
-        //     'datum' => $datum
-        // ];
         return view('operator.editdataop', ['operator' => $operator]);
     }
 
@@ -90,20 +87,7 @@ class OpController extends Controller
      */
     public function update(UpdateOpRequest $request, Operator $operator)
     {
-        if (!Auth::check()) {
-            return redirect('login');
-        }
-        // $nama_operator = $request->input('nama_operator');
-        // $id_operator = $request->input('id_operator');
-        // $factory = $request->input('factory');
-
-
-        // Operator::where('id', $id)
-        // ->update([
-        //     'nama_operator' => $nama_operator,
-        //     'id_operator' => $id_operator,
-        //     'factory' => $factory,
-        // ]);
+        Gate::authorize('update', $operator);
 
         $operator->update($request->all());
 
@@ -114,16 +98,11 @@ class OpController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy( $id)
+    public function destroy($id)
     {
-        if (!Auth::check()) {
-            return redirect('login');
-        }
         Operator::where('id', $id)->delete();
+        alert()->success('Hore!', 'Data Operators Deleted Successfully');
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Data Post Berhasil Dihapus!.',
-        ]); 
+        return redirect('operators')->with('status', 'Data operator berhasil dihapus');
     }
 }

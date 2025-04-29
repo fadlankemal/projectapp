@@ -9,6 +9,9 @@ Data Operator
 <div class="container-fluid mt-2 mx-3">
     <div class="container mt-3 ">
         <h1>Edit Permission</h1>
+        <a href="{{ url('permissions') }}" class="btn btn-danger mb-4">
+            {{ __('Back') }}
+        </a>
         <!-- errror -->
         @if(session()->has('error_message'))
         <div class="alert alert-danger">

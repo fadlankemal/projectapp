@@ -6,38 +6,50 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Laravel') }}</title>
+    <title>@yield('title')</title>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
-
-    <!-- CSS only -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons">
-    <link rel="stylesheet" href="exam/css/demo.css">
-    <link rel="stylesheet" href="exam/css/style.css">
-    <link rel='stylesheet' href='https://cdn.datatables.net/1.13.5/css/dataTables.bootstrap5.min.css'>
+
+
+    <!-- Table -->
+    <link rel='stylesheet' href="{{ asset('public/exam/css/dataTable218.css') }}">
+    <link rel='stylesheet' href="https://cdn.datatables.net/buttons/3.2.0/css/buttons.dataTables.css">
+    <link rel='stylesheet' href="{{ asset('public/exam/css/dateTime.css') }}">
+
 
     <!-- Scripts -->
-    <link href="/styles.css" rel="stylesheet" />
-    <link href="exam/js/script.js" rel="stylesheet" />
-    <link href="/scripts.js" rel="stylesheet" />
-    <link href="../../resources/js/app.js" rel="stylesheet" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    {{-- <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script> --}}
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+    <script src="{{ asset('scripts.js') }}"></script>
 
     <link rel="stylesheet" href="{{ asset('fontawesome-free-6.6.0-web/css/all.min.css') }}">
-    <!--  -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script> <!-- Core theme JS-->
-    <script src="scripts.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
+
+    <!-- CSS only -->
+    <link rel="stylesheet" href="{{ asset('styles.css') }}">
+
+    <!-- Select2 -->
+    <!-- Styles -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" />
+    <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
+    <!-- Or for RTL support -->
+    <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.rtl.min.css" />
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.0/dist/jquery.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.full.min.js"></script>
+
+    <link rel="stylesheet" href="{{ asset('public/select2/select2-bootstrap-5-theme.min.css') }}" />
+    <script src="{{ asset('public/select2/select2.min.js') }}"></script>
 
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])
-
 </head>
 
 <body>
@@ -45,13 +57,14 @@
         @include('layouts.app.sidebar')
         <div id="page-content-wrapper">
             @include('layouts.app.header')
+            @include('sweetalert::alert')
 
             @yield('content')
 
             @include('layouts.app.footer')
         </div>
     </div>
-    @livewireScripts
+
 </body>
 
 </html>

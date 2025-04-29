@@ -24,7 +24,15 @@ class StoreIncomingRequest extends FormRequest
         return [
             'jumlah'            => 'required|integer',
             'operator_id'       => 'required|integer',
-            'barang_id'         => 'required|integer',     
+            'barang_id'         => 'required|integer',
+        ];
+    }
+    public function messages(): array
+    {
+        return [
+            'jumlah.required' => 'Jumlah harus diisi',
+            'operator_id.required' => 'Nama PIC harus dipilih',
+            'barang_id.required' => 'Tipe barang harus dipilih',
         ];
     }
 }

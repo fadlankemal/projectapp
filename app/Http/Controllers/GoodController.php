@@ -2,32 +2,43 @@
 
 namespace App\Http\Controllers;
 
+use RealRashid\SweetAlert\Facades\Alert;
 use Illuminate\Http\Request;
 use App\Models\Good;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
 use \Milon\Barcode\DNS1D;
-use Illuminate\View\View;
 use App\Http\Requests\StoreGoodRequest;
 use App\Http\Requests\UpdateGoodRequest;
+use Illuminate\Routing\Controllers\Middleware;
+use Illuminate\Support\Facades\Gate;
 
 class GoodController extends Controller
 {
+    public static function middleware(): array
+    {
+        return [
+            // examples with aliases, pipe-separated names, guards, etc:
+            new Middleware('permission:view good', only: ['index', 'show']),
+            new Middleware('permission:create good', only: ['create', 'store']),
+            new Middleware('permission:update good', only: ['update', 'edit']),
+            new Middleware('permission:delete good', only: ['destroy']),
+        ];
+    }
+
     public function index(Request $request)
     {
-        if (!Auth::check()) {
-            return redirect('login');
-        }
-        $goods = Good::orderBy('nomor_rak', 'asc')->get();
+        Gate::authorize('view', new Good());
 
-        $search = Good::search($request->search ?? '')->get();        
+        $goods = Good::get();
+        $title = 'Delete Data!';
+        $text = "Are you sure you want to delete?";
+        confirmDelete($title, $text);
+
+
         $view_data = [
             'goods' => $goods,
-            // 'barcode' => $barcode,
-            'search' => $search
         ];
         return view('barang.databarang', $view_data);
-        
     }
 
     /**
@@ -35,25 +46,23 @@ class GoodController extends Controller
      */
     public function create()
     {
-        if (!Auth::check()) {
-            return redirect('login');
-        }
+        Gate::authorize('create', Good::class);
+
         return view('barang.tambahdata');
     }
 
     public function store(StoreGoodRequest $request)
     {
-        if (!Auth::check()) {
-            return redirect('login');
-        }
+        Gate::authorize('create', Good::class);
+
         Good::create($request->except('stok'));
-    
+        Alert::success('Data Barang Created Successfully');
+
         // $generator = new DNS1D();
         // $generator->setStorPath(__DIR__.'/barcode/');
         // $barcode = $generator->getBarcodeHTML($tipe_barang, 'C39');
 
-        return redirect('goods')
-        ->with('success', 'Data barang berhasil ditambahkan');
+        return redirect('goods');
     }
 
     /**
@@ -61,8 +70,10 @@ class GoodController extends Controller
      */
     public function show(Good $good)
     {
+        Gate::authorize('show', new Good());
+
         $generator = new DNS1D();
-        $generator->setStorPath(__DIR__.'/cache/');
+        $generator->setStorPath(__DIR__ . '/cache/');
         $barcode = $generator->getBarcodeHTML($good->tipe_barang, 'C39');
 
         $view_data = [
@@ -70,7 +81,7 @@ class GoodController extends Controller
             'barcode' => $barcode
         ];
 
-        return view ('barang.show', $view_data);
+        return view('barang.show', $view_data);
     }
 
     /**
@@ -78,9 +89,8 @@ class GoodController extends Controller
      */
     public function edit(Good $good)
     {
-        if (!Auth::check()) {
-            return redirect('login');
-        }
+        Gate::authorize('update', $good);
+
         $view_data = [
             'good' => $good
         ];
@@ -92,30 +102,22 @@ class GoodController extends Controller
      */
     public function update(UpdateGoodRequest $request, Good $good)
     {
-        
-        if (!Auth::check()) {
-            return redirect('login');
-        }
-        
+        Gate::authorize('update', $good);
+
         $good->update($request->all());
-        
-        return redirect('databarang')
+
+        return redirect('goods')
             ->with('success', 'Data berhasil diupdate');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy($id)
     {
-        if (!Auth::check()) {
-            return redirect('login');
-        }
         Good::where('id', $id)->delete();
+        alert()->success('Hore!', 'Data Barang Deleted Successfully');
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Data Post Berhasil Dihapus!.',
-        ]); 
+        return redirect()->back();
     }
 }

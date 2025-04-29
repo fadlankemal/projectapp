@@ -2,10 +2,10 @@
 
 namespace App\Enums;
 
-enum MovementStatus: int
+enum MovementStatus: string
 {
-    case INCOMING = 0;
-    case OUTCOMING = 1;
+    case INCOMING = 'Masuk';
+    case OUTCOMING = 'Keluar';
 
     public function label(): string
     {

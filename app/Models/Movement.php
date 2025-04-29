@@ -2,18 +2,19 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Request;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Enums\MovementStatus;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Movement extends Model
 {
 
-    use HasFactory;
+    use SoftDeletes;
 
     protected $table = 'movements';
-    protected $guarded = ['id_proses'];
+    protected $guarded = ['id'];
 
 
     protected $fillble = [
@@ -27,7 +28,27 @@ class Movement extends Model
         'created_at' => 'datetime',
         'updated_at' => 'datetime'
     ];
-    
+
+    protected $dates = ['deleted_at'];
+
+    static public function getRecord()
+    {
+        $return = self::select('movements.*');
+
+        if (!empty(Request::get('status'))) {
+            $return = $return->where('status', '=', Request::get('status'));
+        }
+
+        if (!empty(Request::get('start_date')) && !empty(Request::get('end_date'))) {
+            $return = $return->where('movements.created_at', '>=', Request::get('start_date'))
+                ->where('movements.created_at', '<', Request::get('end_date'));
+        }
+
+        $return = $return->orderBy('id', 'desc');
+
+        return $return;
+    }
+
     public function barang(): BelongsTo
     {
         return $this->belongsTo(Good::class);

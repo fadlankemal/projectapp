@@ -9,6 +9,9 @@ Edit User
 <div class="container-fluid mt-2 mx-3">
     <div class="container mt-3 ">
         <h1>Edit User</h1>
+        <a href="{{ url('users') }}" class="btn btn-danger mb-4">
+            {{ __('Back') }}
+        </a>
         <!-- errror -->
         @if(session()->has('error_message'))
         <div class="alert alert-danger">
@@ -16,7 +19,7 @@ Edit User
         </div>
         @endif
         <!-- form -->
-        <form method="POST" action="{{ url('users')}}">
+        <form method="POST" action="{{ url('users/'.$user->id) }}">
             @method('PUT')
             @csrf
             <div class="mb-3">
@@ -37,7 +40,7 @@ Edit User
 
             <div class="mb-3">
                 <label for="" class="form-label">Password</label>
-                <input class="form-control" id="password" name="password" value="{{ $user->password }}"></input>
+                <input class="form-control" id="password" name="password"></input>
                 @if($errors->has('password'))
                 <span class="text-danger">{{ $errors->first('password') }}</span>
                 @endif
@@ -49,7 +52,7 @@ Edit User
                     <option value="">Select Role</option>
                     @foreach($roles as $role)
                     <option value="{{ $role }}"
-                        {{ in_array($role->id, $userRoles) ? 'selected' :''}}>
+                        {{ in_array($role, $userRoles) ? 'selected' :''}}>
                         {{ $role }}
                     </option>
                     @endforeach

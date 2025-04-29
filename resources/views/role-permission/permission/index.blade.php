@@ -6,8 +6,8 @@ Permission Role
 
 
 @section('content')
-<div class="container-fluid mt-2 mx-3">
-    <h1>Roles</h1>
+<div class="container-fluid mt-2 mx-6">
+    <h1>Permission</h1>
     <a href="{{ url('permissions/create')}}" class="btn btn-success mb-2">Tambah permission</a>
     @if(session('status'))
     <div class="alert alert-warning alert-dismissible fade show" role="alert">

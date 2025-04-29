@@ -8,9 +8,21 @@ use App\Http\Requests\UpdateRoleRequest;
 use App\Http\Requests\StoreRoleRequest;
 use Spatie\Permission\Models\Permission;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Routing\Controllers\Middleware;
+
 
 class RoleController extends Controller
 {
+    public static function middleware(): array
+    {
+        return [
+            // examples with aliases, pipe-separated names, guards, etc:
+            new Middleware('permission:view role', only: ['index']),
+            new Middleware('permission:create role', only: ['create', 'store']),
+            new Middleware('permission:update role', only: ['update', 'edit']),
+            new Middleware('permission:delete role', only: ['destroy']),
+        ];
+    }
     public function index()
     {
         $roles = Role::all();
@@ -77,7 +89,6 @@ class RoleController extends Controller
         $role = Role::findOrFail($roleId);
         $role->syncPermissions($request->permission);
 
-        return redirect()->back()->with('status','Permissions added to role');
+        return redirect()->back()->with('status', 'Permissions added to role');
     }
-
 }

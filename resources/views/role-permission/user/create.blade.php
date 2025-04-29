@@ -9,6 +9,11 @@ Create User
 <div class="container-fluid mt-2 mx-3">
     <div class="container mt-3 ">
         <h1>Tambah User</h1>
+        <a href="{{ url('users') }}" class="btn btn-danger mb-4">
+            {{ __('Back') }}
+        </a>
+
+
         <!-- errror -->
         @if(session()->has('error_message'))
         <div class="alert alert-danger">

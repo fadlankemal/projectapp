@@ -6,22 +6,31 @@ use Illuminate\Http\Request;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Traits\HasRoles;
+use Illuminate\Routing\Controllers\Middleware;
 
 use App\Models\User;
 
 class UserController extends Controller
 {
-    // public function __construct()
-    // {
-    //     $this->middleware('permission:view user', ['only' => ['index']]);
-    //     $this->middleware('permission:create user', ['only' => ['create', 'store']]);
-    //     $this->middleware('permission:update user', ['only' => ['update', 'edit']]);
-    //     $this->middleware('permission:delete user', ['only' => ['destroy']]);
-    // }
+    public static function middleware(): array
+    {
+        return [
+            // examples with aliases, pipe-separated names, guards, etc:
+            new Middleware('permission:view user', only: ['index']),
+            new Middleware('permission:create user', only: ['create', 'store']),
+            new Middleware('permission:update user', only: ['update', 'edit']),
+            new Middleware('permission:delete user', only: ['destroy']),
+        ];
+    }
 
     public function index()
     {
         $users = User::get();
+        $title = 'Delete Data!';
+        $text = "Are you sure you want to delete?";
+        confirmDelete($title, $text);
+
         return view('role-permission.user.index', ['users' => $users]);
     }
 
@@ -87,11 +96,13 @@ class UserController extends Controller
         return redirect('/users')->with('status', 'User Updated Successfully with roles');
     }
 
-    public function destroy($userId)
+    public function destroy($id)
     {
-        $user = User::findOrFail($userId);
-        $user->delete();
+        User::where('id', $id)->delete();
 
-        return redirect('/users')->with('status', 'User Delete Successfully');
+        alert()->success('Hore!', 'Data User Deleted Successfully');
+
+        return redirect()->back();
+
     }
 }

@@ -8,7 +8,18 @@ Data Operator
 @section('content')
 <div class="container-fluid mt-2 mx-3">
     <div class="container mt-3 ">
-        <h1>Tambah Permission</h1>
+        <div class="row ">
+            <div class="col-10 p-2">
+                <h1 class="card-title">
+                    {{ __('Tambah Permission') }}
+                </h1>
+            </div>
+            <div class="col-2 d-flex mb-4">
+                <a href="{{ url('permissions') }}" class="btn btn-danger ms-auto p-2">
+                    {{ __('Back') }}
+                </a>
+            </div>
+        </div>
         <!-- errror -->
         @if(session()->has('error_message'))
         <div class="alert alert-danger">
@@ -25,22 +36,6 @@ Data Operator
                 <span class="text-danger">{{ $errors->first('name') }}</span>
                 @endif
             </div>
-
-            <!-- <div class="mb-3">
-            <label for="id_operator" class="form-label">Nomor Karyawan</label>
-            <input class="form-control" id="id_operator" placeholder="123456xxx" name="id_operator"></input>
-            @if($errors->has('id_operator'))
-            <span class="text-danger">{{ $errors->first('id_operator') }}</span>
-            @endif
-        </div>
-
-        <div class="mb-3">
-            <label for="factory" class="form-label">Factory</label>
-            <input class="form-control" id="factory" name="factory"></input>
-            @if($errors->has('factory'))
-            <span class="text-danger">{{ $errors->first('factory') }}</span>
-            @endif
-        </div> -->
             <button type="submit" class="btn btn-success mb-2">Input</button>
         </form>
     </div>
